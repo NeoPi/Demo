@@ -28,10 +28,10 @@ public class ShareDataInfo {
     }
 
     public static class AvatarOption{
-        public int width ; // 头像的宽
-        public int height ; // 头像的高
-        public int pointX; // 标记头像中心点X的坐标 （想对于在背景图中的坐标，下同）
-        public int pointY ; // 标记头像中心点Y的坐标
+        public int width = 200; // 头像的宽
+        public int height = 200; // 头像的高
+        public int pointX = 100; // 标记头像中心点X的坐标 （想对于在背景图中的坐标，下同）
+        public int pointY = 100; // 标记头像中心点Y的坐标
         public String url ; // 头像url
 
 

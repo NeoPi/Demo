@@ -23,15 +23,12 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 public class PreviewActivity extends Activity {
 
   private ImageView ivPreView;
   private String extraJsonData;
-
-  private final String avatarUrl = "http://cdn.fds.api.xiaomi.com/b2c-bbs/cn/547829071/avatar.jpg";
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -51,15 +48,15 @@ public class PreviewActivity extends Activity {
   private void buildBitmap() {
     final ShareDataInfo mSharedDataInfo =
         MainActivity.gson.fromJson(extraJsonData, ShareDataInfo.class);
-    //        Bitmap avatarBmp = BitmapFactory.decodeResource(getResources(), R.drawable.avatar);
     ImageSize imageSize =
         new ImageSize(mSharedDataInfo.avatarOption.width, mSharedDataInfo.avatarOption.height);
     DisplayImageOptions imageOption =
-        new DisplayImageOptions.Builder().imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
+        new DisplayImageOptions.Builder()
+            .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
             .cacheOnDisk(true)
             .build();
     ImageLoader.getInstance()
-        .loadImage(avatarUrl, imageSize, imageOption, new SimpleImageLoadingListener() {
+        .loadImage(mSharedDataInfo.avatarOption.url, imageSize, imageOption, new SimpleImageLoadingListener() {
           @Override public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
             super.onLoadingComplete(imageUri, view, loadedImage);
             loadImage(mSharedDataInfo, loadedImage);
@@ -118,7 +115,7 @@ public class PreviewActivity extends Activity {
       textPaint.setTextSize(textOption.textSize);
       Typeface typeFace = Typeface.DEFAULT;
       if (!TextUtils.isEmpty(textOption.typeFace)) {
-        typeFace = Typeface.createFromAsset(PreviewActivity.this.getAssets(), textOption.typeFace);
+        typeFace = Typeface.createFromAsset(getAssets(), "fonts/DINCond-Medium.ttf");
       }
       drawText(textOption.content, canvas, textPaint, textOption.centreX, textOption.baselineY,
           typeFace);

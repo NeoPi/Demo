@@ -281,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
             .cacheOnDisk(true)
             .build();
     ImageLoader.getInstance()
-        .loadImage(avatarUrl, imageSize, imageOption, new SimpleImageLoadingListener() {
+        .loadImage(mSharedDataInfo.avatarOption.url, imageSize, imageOption, new SimpleImageLoadingListener() {
           @Override public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
             super.onLoadingComplete(imageUri, view, loadedImage);
             loadImage(mSharedDataInfo, loadedImage);
@@ -395,9 +395,8 @@ public class MainActivity extends AppCompatActivity {
     textOption3.baselineY = 670;
     textOption3.centreX = 540;
     textOption3.content = "210000";
-    //        textOption3.typeFace = "fonts/DINCond-Medium.otf";
+    //        textOption3.typeFace = "fonts/DINCond-Medium.ttf";
     textOptions.add(textOption3);
-
     dataInfo.textOptions = textOptions;
 
     // 构造渠道信息
@@ -469,40 +468,30 @@ public class MainActivity extends AppCompatActivity {
     llX.setVisibility(View.VISIBLE);
     llY.setVisibility(View.VISIBLE);
     llEditText.setVisibility(View.VISIBLE);
-    //        mSeekX.setProgress(0);
-    //        mSeekY.setProgress(0);
     final ShareDataInfo.TextOption textOption = new ShareDataInfo.TextOption();
-    final TextView tv = new TextView(this);
-    tv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-        ViewGroup.LayoutParams.WRAP_CONTENT));
-    tv.setText("我是文字");
-    tv.setTextColor(Color.WHITE);
-    tv.setTextSize(textSize);
     textOption.textSize = textSize;
     textOption.textColor = Color.WHITE;
     textOption.content = "我是文字";
     textOption.centreX = bgBmp.getWidth() / 2;
     textOption.baselineY = 100;
     mTextOptions.add(textOption);
-    //        frameLayout.addView(tv);
+    drawWithJson(buildToJson());
   }
 
   /**
    * 添加头像
    */
   private void addAvatar() {
-    mAvatarOption.width = 100;
-    mAvatarOption.height = 100;
+    mAvatarOption.width = 200;
+    mAvatarOption.height = 200;
+    mAvatarOption.pointX = 100;
+    mAvatarOption.pointY = 100;
+    mAvatarOption.url = avatarUrl;
     avatarIsEdit = true;
     textIsEdit = false;
     llX.setVisibility(View.VISIBLE);
     llY.setVisibility(View.VISIBLE);
     llEditText.setVisibility(View.GONE);
-    mSeekX.setProgress(0);
-    mSeekY.setProgress(0);
-    final ImageView avatar = new ImageView(MainActivity.this);
-    avatar.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
-    avatar.setImageResource(R.drawable.avatar);
-    //        frameLayout.addView(avatar);
+    drawWithJson(buildToJson());
   }
 }
