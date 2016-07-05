@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
   private ImageView iv;
   private Button mDrawBtn;
   private Button mPreviewBtn;
-  private FrameLayout frameLayout;
 
   private ShareDataInfo shareDataInfo;
   public static Gson gson = new Gson();
@@ -92,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
   private void initView() {
     bgBmp = BitmapFactory.decodeResource(getResources(), R.drawable.background);
-    frameLayout = (FrameLayout) findViewById(R.id.fr_content);
     iv = (ImageView) findViewById(R.id.iv_bg);
     mSeekX = (SeekBar) findViewById(R.id.sb_x);
     mSeekY = (SeekBar) findViewById(R.id.seek_bar_Y);
