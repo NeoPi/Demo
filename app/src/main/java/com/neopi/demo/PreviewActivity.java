@@ -53,26 +53,28 @@ public class PreviewActivity extends Activity {
     ImageSize imageSize =
         new ImageSize(mSharedDataInfo.avatarOption.width, mSharedDataInfo.avatarOption.height);
     DisplayImageOptions imageOption =
-        new DisplayImageOptions.Builder()
-            .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
+        new DisplayImageOptions.Builder().imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
             .cacheOnDisk(true)
             .build();
     ImageLoader.getInstance()
-        .loadImage(mSharedDataInfo.avatarOption.url, imageSize, imageOption, new SimpleImageLoadingListener() {
-          @Override public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-            super.onLoadingComplete(imageUri, view, loadedImage);
-            loadImage(mSharedDataInfo, loadedImage);
-          }
+        .loadImage(mSharedDataInfo.avatarOption.url, imageSize, imageOption,
+            new SimpleImageLoadingListener() {
+              @Override
+              public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                super.onLoadingComplete(imageUri, view, loadedImage);
+                loadImage(mSharedDataInfo, loadedImage);
+              }
 
-          @Override public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-            super.onLoadingFailed(imageUri, view, failReason);
-          }
-        });
+              @Override
+              public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                super.onLoadingFailed(imageUri, view, failReason);
+              }
+            });
   }
 
   private void loadImage(ShareDataInfo mSharedDataInfo, Bitmap avatarBmp) {
-    if ( avatarBmp == null){
-      avatarBmp = BitmapFactory.decodeResource(getResources(),R.drawable.avatar);
+    if (avatarBmp == null) {
+      avatarBmp = BitmapFactory.decodeResource(getResources(), R.drawable.avatar);
     }
 
     Bitmap bgBmp = BitmapFactory.decodeResource(getResources(), R.drawable.background);
@@ -85,42 +87,47 @@ public class PreviewActivity extends Activity {
     Canvas canvas = new Canvas(canvasBmp);
     canvas.drawBitmap(bgBmp, 0, 0, paint);
 
-    BitmapShader bitmapShader =
-        new BitmapShader(avatarBmp, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-    RectF mRectfSrc = new RectF();
-    mRectfSrc.set(0, 0, avatarBmp.getWidth(), avatarBmp.getHeight());
-    Log.e("TAG", "avatar width:" + avatarBmp.getWidth() + ",height:" + avatarBmp.getHeight());
+    if (avatarBmp != null) {
+      BitmapShader bitmapShader =
+          new BitmapShader(avatarBmp, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+      RectF mRectfSrc = new RectF();
+      mRectfSrc.set(0, 0, avatarBmp.getWidth(), avatarBmp.getHeight());
+      Log.e("TAG", "avatar width:" + avatarBmp.getWidth() + ",height:" + avatarBmp.getHeight());
 
-    Paint mSrcPaint = new Paint();
-    mSrcPaint.setAntiAlias(true);
-    mSrcPaint.setShader(bitmapShader);
-    mSrcPaint.setFilterBitmap(true);
-    mSrcPaint.setDither(true);
+      Paint mSrcPaint = new Paint();
+      mSrcPaint.setAntiAlias(true);
+      mSrcPaint.setShader(bitmapShader);
+      mSrcPaint.setFilterBitmap(true);
+      mSrcPaint.setDither(true);
 
-    RectF mDsc = new RectF();
-    int marginLeft = mSharedDataInfo.avatarOption.pointX - avatarBmp.getWidth() / 2;
-    int marginTop = mSharedDataInfo.avatarOption.pointY - avatarBmp.getHeight() / 2;
-    Log.e("TAG", "avatar marginLeft:" + marginLeft + ",marginTop:" + marginTop);
-    mDsc.set(marginLeft, marginTop, avatarBmp.getWidth() + marginLeft,
-        avatarBmp.getHeight() + marginTop);
-    Matrix matrix = new Matrix();
-    matrix.setRectToRect(mRectfSrc, mDsc, Matrix.ScaleToFit.FILL);
-    bitmapShader.setLocalMatrix(matrix);
-    canvas.drawRoundRect(mDsc, mSharedDataInfo.avatarOption.width,
-        mSharedDataInfo.avatarOption.height, mSrcPaint);
+      RectF mDsc = new RectF();
+      int marginLeft = mSharedDataInfo.avatarOption.pointX - avatarBmp.getWidth() / 2;
+      int marginTop = mSharedDataInfo.avatarOption.pointY - avatarBmp.getHeight() / 2;
+      Log.e("TAG", "avatar marginLeft:" + marginLeft + ",marginTop:" + marginTop);
+      mDsc.set(marginLeft, marginTop, avatarBmp.getWidth() + marginLeft,
+          avatarBmp.getHeight() + marginTop);
+      Matrix matrix = new Matrix();
+      matrix.setRectToRect(mRectfSrc, mDsc, Matrix.ScaleToFit.FILL);
+      bitmapShader.setLocalMatrix(matrix);
+      canvas.drawRoundRect(mDsc, mSharedDataInfo.avatarOption.width,
+          mSharedDataInfo.avatarOption.height, mSrcPaint);
+    }
 
     Paint textPaint = new Paint();
     textPaint.setAntiAlias(true);
-    Typeface typeFace ;
+    Typeface typeFace;
     for (ShareDataInfo.TextOption textOption : mSharedDataInfo.textOptions) {
       textPaint.setColor(textOption.textColor);
       textPaint.setFakeBoldText(textOption.bold);
       textPaint.setTextSize(textOption.textSize);
-      if ( TextUtils.isEmpty(textOption.typeFace) ) {
+      if (TextUtils.isEmpty(textOption.typeFace)) {
         typeFace = Typeface.DEFAULT;
       } else {
         //typeFace = Typeface.createFromAsset(getAssets(), "fonts/DINCond-Medium.otf");
-        File file = new File(Environment.getExternalStorageDirectory() + "/mibbs/fonts"+File.separator + textOption.typeFace);
+        File file = new File(Environment.getExternalStorageDirectory()
+            + "/mibbs/fonts"
+            + File.separator
+            + textOption.typeFace);
         typeFace = Typeface.createFromFile(file);
       }
       drawText(textOption.content, canvas, textPaint, textOption.centreX, textOption.baselineY,
