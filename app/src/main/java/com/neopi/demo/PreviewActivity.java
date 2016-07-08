@@ -67,7 +67,10 @@ public class PreviewActivity extends Activity {
       }
     }
     // 使用本地保存的数据
-    extraJsonData = SharedPrefUtils.getInstance().getStringPref(this,DRAW_JSON,"");
+    if (TextUtils.isEmpty(extraJsonData)){
+      extraJsonData = SharedPrefUtils.getInstance().getStringPref(this,DRAW_JSON,"");
+    }
+
     if ( TextUtils.isEmpty(extraJsonData) ){
       // 这里使用传递过来的数据
       Intent mIntent = getIntent();
