@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
   private final String avatarUrl = "http://cdn.fds.api.xiaomi.com/b2c-bbs/cn/547829071/avatar.jpg";
 
   private ImageView iv;
-  private Button mDrawBtn;
+  private Button mSaveBtn;
   private Button mPreviewBtn;
 
   private ShareDataInfo shareDataInfo;
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     mCheckY = (CheckBox) findViewById(R.id.check_box_Y);
     mCheckBold = (CheckBox) findViewById(R.id.check_text_bold);
 
-    mDrawBtn = (Button) findViewById(R.id.btn_start_clear);
+    mSaveBtn = (Button) findViewById(R.id.btn_start_clear);
     mPreviewBtn = (Button) findViewById(R.id.btn_start_preview);
     llX = (LinearLayout) findViewById(R.id.ll_x);
     llY = (LinearLayout) findViewById(R.id.ll_y);
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
     mSeekX.setMax(bgBmp.getWidth());
     mSeekY.setMax(bgBmp.getHeight());
 
-    mDrawBtn.setOnClickListener(mOnclick);
+    mSaveBtn.setOnClickListener(mOnclick);
     mPreviewBtn.setOnClickListener(mOnclick);
     mSeekX.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
       @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -236,15 +236,13 @@ public class MainActivity extends AppCompatActivity {
     mTextOptions = new ArrayList<>();
     mChanneInfos = new ArrayList<>();
 
-    data = buildJsonData();
-    shareDataInfo = gson.fromJson(data, ShareDataInfo.class);
   }
 
   View.OnClickListener mOnclick = new View.OnClickListener() {
     @Override public void onClick(View v) {
       switch (v.getId()) {
         case R.id.btn_start_clear:
-          clear();
+          save();
           //                    drawWithJson();
           break;
         case R.id.btn_start_preview:
@@ -254,8 +252,10 @@ public class MainActivity extends AppCompatActivity {
     }
   };
 
-  private void clear() {
-
+  private void save() {
+    String json = buildToJson();
+    Log.e("TAG","save json:"+json);
+    SharedPrefUtils.getInstance().putStringPref(this,PreviewActivity.DRAW_JSON,json);
   }
 
   /**

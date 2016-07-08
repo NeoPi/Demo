@@ -32,6 +32,8 @@ public class PreviewActivity extends Activity {
   private ImageView ivPreView;
   private String extraJsonData;
 
+  public static final String DRAW_JSON = "drawable_json";
+
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_preview);
@@ -41,9 +43,18 @@ public class PreviewActivity extends Activity {
     buildBitmap();
   }
 
+  /**
+   * 这里读取数据使用了两种方式
+   * 根据个人项目而取舍
+   */
   private void handIntent() {
-    Intent mIntent = getIntent();
-    extraJsonData = mIntent.getStringExtra(MainActivity.EXTRA_DATA);
+    // 使用本地保存的数据
+    extraJsonData = SharedPrefUtils.getInstance().getStringPref(this,DRAW_JSON,"");
+    if ( TextUtils.isEmpty(extraJsonData)){
+      // 这里使用传递过来的数据
+      Intent mIntent = getIntent();
+      extraJsonData = mIntent.getStringExtra(MainActivity.EXTRA_DATA);
+    }
     Log.e("TAG", "json data:" + extraJsonData);
   }
 
@@ -120,15 +131,17 @@ public class PreviewActivity extends Activity {
       textPaint.setColor(textOption.textColor);
       textPaint.setFakeBoldText(textOption.bold);
       textPaint.setTextSize(textOption.textSize);
-      if (TextUtils.isEmpty(textOption.typeFace)) {
+      // TODO 此处 ! 不要忘记删除,这里只是做测试用的
+      if ( !TextUtils.isEmpty(textOption.typeFace )) {
         typeFace = Typeface.DEFAULT;
       } else {
-        //typeFace = Typeface.createFromAsset(getAssets(), "fonts/DINCond-Medium.otf");
-        File file = new File(Environment.getExternalStorageDirectory()
-            + "/mibbs/fonts"
-            + File.separator
-            + textOption.typeFace);
-        typeFace = Typeface.createFromFile(file);
+        typeFace = Typeface.createFromAsset(getAssets(), "fonts/DINCond-Medium.otf");
+
+        //File file = new File(Environment.getExternalStorageDirectory()
+        //    + "/mibbs/fonts"
+        //    + File.separator
+        //    + "DINCond-Medium.otf");
+        //typeFace = Typeface.createFromFile(file);
       }
       drawText(textOption.content, canvas, textPaint, textOption.centreX, textOption.baselineY,
           typeFace);
