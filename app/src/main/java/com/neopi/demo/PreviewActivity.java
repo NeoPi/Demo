@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
@@ -25,7 +24,9 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 
 public class PreviewActivity extends Activity {
 
@@ -48,9 +49,26 @@ public class PreviewActivity extends Activity {
    * 根据个人项目而取舍
    */
   private void handIntent() {
+    // 读取本地文件中的JSON数据
+    if ( TextUtils.isEmpty(extraJsonData) ){
+      File file = new File(Environment.getExternalStorageDirectory()+"/DrawDemo/json.txt");
+      try {
+        BufferedReader br = new BufferedReader(new FileReader(file));
+
+        StringBuffer sb = new StringBuffer();
+        String str ;
+        while((str = br.readLine() ) != null){
+          sb.append(str);
+        }
+        extraJsonData = sb.toString();
+        br.close();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
     // 使用本地保存的数据
     extraJsonData = SharedPrefUtils.getInstance().getStringPref(this,DRAW_JSON,"");
-    if ( TextUtils.isEmpty(extraJsonData)){
+    if ( TextUtils.isEmpty(extraJsonData) ){
       // 这里使用传递过来的数据
       Intent mIntent = getIntent();
       extraJsonData = mIntent.getStringExtra(MainActivity.EXTRA_DATA);

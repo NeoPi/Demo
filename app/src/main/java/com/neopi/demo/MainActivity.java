@@ -30,11 +30,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -45,6 +43,8 @@ import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,9 +57,7 @@ public class MainActivity extends AppCompatActivity {
   private Button mSaveBtn;
   private Button mPreviewBtn;
 
-  private ShareDataInfo shareDataInfo;
   public static Gson gson = new Gson();
-  private String data = "";
 
   private ShareDataInfo mShareDataInfo;
   private ShareDataInfo.AvatarOption mAvatarOption;
@@ -235,7 +233,6 @@ public class MainActivity extends AppCompatActivity {
     mAvatarOption = new ShareDataInfo.AvatarOption();
     mTextOptions = new ArrayList<>();
     mChanneInfos = new ArrayList<>();
-
   }
 
   View.OnClickListener mOnclick = new View.OnClickListener() {
@@ -254,8 +251,23 @@ public class MainActivity extends AppCompatActivity {
 
   private void save() {
     String json = buildToJson();
-    Log.e("TAG","save json:"+json);
-    SharedPrefUtils.getInstance().putStringPref(this,PreviewActivity.DRAW_JSON,json);
+    Log.e("TAG", "save json:" + json);
+    SharedPrefUtils.getInstance().putStringPref(this, PreviewActivity.DRAW_JSON, json);
+
+    File file = new File(Environment.getExternalStorageDirectory() + "/DrawDemo/");
+    if (!file.exists()) {
+      file.mkdir();
+    }
+    try {
+      File jsonFile = new File(file.getAbsolutePath() + "/json.txt");
+      if (!jsonFile.exists())
+        jsonFile.createNewFile();
+      PrintStream ps = new PrintStream(jsonFile);
+      ps.println(json);
+      ps.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -284,16 +296,19 @@ public class MainActivity extends AppCompatActivity {
             .cacheOnDisk(true)
             .build();
     ImageLoader.getInstance()
-        .loadImage(mSharedDataInfo.avatarOption.url, imageSize, imageOption, new SimpleImageLoadingListener() {
-          @Override public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-            super.onLoadingComplete(imageUri, view, loadedImage);
-            loadImage(mSharedDataInfo, loadedImage);
-          }
+        .loadImage(mSharedDataInfo.avatarOption.url, imageSize, imageOption,
+            new SimpleImageLoadingListener() {
+              @Override
+              public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                super.onLoadingComplete(imageUri, view, loadedImage);
+                loadImage(mSharedDataInfo, loadedImage);
+              }
 
-          @Override public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-            super.onLoadingFailed(imageUri, view, failReason);
-          }
-        });
+              @Override
+              public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                super.onLoadingFailed(imageUri, view, failReason);
+              }
+            });
   }
 
   Bitmap canvasBmp;
@@ -345,8 +360,13 @@ public class MainActivity extends AppCompatActivity {
       Typeface typeFace = Typeface.DEFAULT;
       if (TextUtils.isEmpty(textOption.typeFace)) {
         //typeFace = Typeface.createFromAsset(MainActivity.this.getAssets(), "fonts/DINCond-Medium.otf");
-        File file = new File(
-            Environment.getExternalStorageDirectory() + File.separator+"mibbs"+File.separator+"fonts"+File.separator + "DINCond-Medium.otf");
+        File file = new File(Environment.getExternalStorageDirectory()
+            + File.separator
+            + "mibbs"
+            + File.separator
+            + "fonts"
+            + File.separator
+            + "DINCond-Medium.otf");
         typeFace = Typeface.createFromFile(file);
         //typeFace = Typeface.createFromFile("/storage/emulated/0/mibbs/fonts/DINCond-Medium.otf");
       }
