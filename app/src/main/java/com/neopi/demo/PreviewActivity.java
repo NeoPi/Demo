@@ -13,6 +13,7 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import java.io.File;
 
 public class PreviewActivity extends Activity {
 
@@ -107,15 +109,19 @@ public class PreviewActivity extends Activity {
     canvas.drawRoundRect(mDsc, mSharedDataInfo.avatarOption.width,
         mSharedDataInfo.avatarOption.height, mSrcPaint);
 
+    Paint textPaint = new Paint();
+    textPaint.setAntiAlias(true);
+    Typeface typeFace ;
     for (ShareDataInfo.TextOption textOption : mSharedDataInfo.textOptions) {
-      Paint textPaint = new Paint();
-      textPaint.setAntiAlias(true);
-      textPaint.setColor(Color.WHITE);
+      textPaint.setColor(textOption.textColor);
       textPaint.setFakeBoldText(textOption.bold);
       textPaint.setTextSize(textOption.textSize);
-      Typeface typeFace = Typeface.DEFAULT;
-      if (!TextUtils.isEmpty(textOption.typeFace)) {
-        typeFace = Typeface.createFromAsset(getAssets(), "fonts/DINCond-Medium.ttf");
+      if ( TextUtils.isEmpty(textOption.typeFace) ) {
+        typeFace = Typeface.DEFAULT;
+      } else {
+        //typeFace = Typeface.createFromAsset(getAssets(), "fonts/DINCond-Medium.otf");
+        File file = new File(Environment.getExternalStorageDirectory() + "/mibbs/fonts"+File.separator + textOption.typeFace);
+        typeFace = Typeface.createFromFile(file);
       }
       drawText(textOption.content, canvas, textPaint, textOption.centreX, textOption.baselineY,
           typeFace);

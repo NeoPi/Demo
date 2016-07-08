@@ -1,6 +1,7 @@
 package com.neopi.demo;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
@@ -11,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -42,6 +44,7 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -340,8 +343,12 @@ public class MainActivity extends AppCompatActivity {
       textPaint.setFakeBoldText(textOption.bold);
       textPaint.setTextSize(textOption.textSize);
       Typeface typeFace = Typeface.DEFAULT;
-      if (!TextUtils.isEmpty(textOption.typeFace)) {
-        typeFace = Typeface.createFromAsset(MainActivity.this.getAssets(), textOption.typeFace);
+      if (TextUtils.isEmpty(textOption.typeFace)) {
+        //typeFace = Typeface.createFromAsset(MainActivity.this.getAssets(), "fonts/DINCond-Medium.otf");
+        File file = new File(
+            Environment.getExternalStorageDirectory() + File.separator+"mibbs"+File.separator+"fonts"+File.separator + "DINCond-Medium.otf");
+        typeFace = Typeface.createFromFile(file);
+        //typeFace = Typeface.createFromFile("/storage/emulated/0/mibbs/fonts/DINCond-Medium.otf");
       }
       drawText(textOption.content, canvas, textPaint, textOption.centreX, textOption.baselineY,
           typeFace);
@@ -395,7 +402,6 @@ public class MainActivity extends AppCompatActivity {
     textOption3.baselineY = 670;
     textOption3.centreX = 540;
     textOption3.content = "210000";
-    //        textOption3.typeFace = "fonts/DINCond-Medium.ttf";
     textOptions.add(textOption3);
     dataInfo.textOptions = textOptions;
 

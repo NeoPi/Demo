@@ -11,6 +11,7 @@ public class ShareDataInfo {
     public String hd_mode;
     public String callback ;
     public String bgUrl ;
+    public String typeFaceUrl ; // 如果需要下载字体的下载url
     public AvatarOption avatarOption;
     public List<TextOption> textOptions;
     public List<ChannelInfo> channelInfos;
@@ -54,7 +55,7 @@ public class ShareDataInfo {
         public int baselineY ;
         public boolean bold;
         public String content ;
-        public String typeFace ; //　此处表示放在assets下的文字样式，可为null
+        public String typeFace ; //　此处表示放在assets下的文字样式名，可为null
 
         @Override
         public String toString() {
